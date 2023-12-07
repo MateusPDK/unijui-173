@@ -6,10 +6,7 @@ using TMPro;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    private float moveSpeed;
-    public float walkSpeed;
-    public float sprintSpeed;
-    public float exaustedSpeed;
+    public float moveSpeed;
 
     public float groundDrag;
 
@@ -18,9 +15,11 @@ public class PlayerMovement : MonoBehaviour
     public float airMultiplier;
     bool readyToJump;
 
+    [HideInInspector] public float walkSpeed;
+    [HideInInspector] public float sprintSpeed;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -35,16 +34,6 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
-
-    public MovementState state;
-
-    public enum MovementState
-    {
-        walking,
-        sprinting,
-        exausted,
-        air,
-    }
 
     private void Start()
     {
@@ -61,7 +50,6 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
         SpeedControl();
-        StateHandler();
 
         // handle drag
         if (grounded)
@@ -88,36 +76,6 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
-        }
-    }
-
-    private void StateHandler()
-    {
-        // Mode - Sprinting
-        if (grounded && Input.GetKey(sprintKey))
-        {
-            state = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
-        }
-
-        // Mode - Exausted
-        else if (grounded && state != MovementState.exausted)
-        {
-            state = MovementState.exausted;
-            moveSpeed = exaustedSpeed;
-        }
-
-        // Mode - Walking
-        else if (grounded)
-        {
-            state = MovementState.walking;
-            moveSpeed = walkSpeed;
-        }
-
-        // Mode - Air
-        else
-        {
-            state = MovementState.air;
         }
     }
 
